@@ -9,7 +9,10 @@
 /* See the license in the file "LICENSE.txt" in the root directory. */
 
 #include <boost/program_options.hpp>
+#include <fstream>
 #include <iostream>
+
+#include "core/mapreduce.hpp"
 
 namespace {
 
@@ -29,8 +32,10 @@ void get_param(const int argc, const char* const argv[], param_t& param) {
   desc.add_options()
       ("help,h", "this help")
       ("src,s", po::value<std::string>(), "path to file with data")
-      ("mnum,m", po::value<std::size_t>(), "number of threads to work with map function")
-      ("rnum,r", po::value<std::size_t>(), "number of threads to work with reduce function");
+      ("mnum,m", po::value<std::size_t>()->default_value(3),
+       "number of threads to work with map function (def: 3)")
+      ("rnum,r", po::value<std::size_t>()->default_value(3),
+       "number of threads to work with reduce function (def: 3)");
   // clang-format on
 
   po::variables_map vm;
@@ -69,6 +74,18 @@ void get_param(const int argc, const char* const argv[], param_t& param) {
     throw std::invalid_argument("Number of threads for reduce was not set");
 }
 
+std::vector<std::string> read_file(std::fstream& strm) {
+  std::vector<std::string> lines;
+
+  while (strm) {
+    std::string tmp;
+    strm >> tmp;
+    if (!tmp.empty())
+      lines.push_back(std::move(tmp));
+  }
+  return lines;
+}
+
 } /* :: */
 
 /** @brief Main entry point */
@@ -82,6 +99,14 @@ int main(int argc, const char* argv[]) {
     std::cerr << e.what() << std::endl;
     return EXIT_FAILURE;
   }
+
+  std::fstream fstrm(prm.src);
+  if (!fstrm) {
+    std::cerr << "Can not opened file" << std::endl;
+    return EXIT_SUCCESS;
+  }
+  std::vector<std::string> input_lines = read_file(fstrm);
+  fstrm.close();
 
   return EXIT_SUCCESS;
 }
