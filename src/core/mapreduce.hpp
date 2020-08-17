@@ -13,6 +13,7 @@
 
 #include "mapper.hpp"
 
+#include "common/merge.hpp"
 #include "common/split.hpp"
 
 /** @brief The namespace of the MAP REDUCE project */
@@ -36,8 +37,12 @@ public:
     core::mapper<DATA_TYPE, MAPPER_OUT_TYPE> mapper(mfunc);
     std::vector<std::vector<MAPPER_OUT_TYPE>> mres = mapper.exec(std::move(splitted));
 
+    /* Sorted */
     std::for_each(mres.begin(), mres.end(),
                   [](std::vector<MAPPER_OUT_TYPE>& vec) { std::sort(vec.begin(), vec.end()); });
+
+    /* MERGE */
+    std::vector<MAPPER_OUT_TYPE> smerged = common::merge<MAPPER_OUT_TYPE>(std::move(mres));
   }
 };
 

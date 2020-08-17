@@ -8,9 +8,10 @@
 
 /* See the license in the file "LICENSE.txt" in the root directory. */
 
-#include <boost/program_options.hpp>
 #include <fstream>
 #include <iostream>
+
+#include <boost/program_options.hpp>
 
 #include "core/mapreduce.hpp"
 
