@@ -12,6 +12,7 @@
 #include <string>
 
 #include "mapper.hpp"
+#include "reducer.hpp"
 
 #include "common/merge.hpp"
 #include "common/split.hpp"
@@ -22,7 +23,7 @@ namespace yamr {
 namespace core {
 
 /** @brief The map_reduce class */
-template <class DATA_TYPE, class MAPPER_OUT_TYPE>
+template <class DATA_TYPE, class MAPPER_OUT_TYPE, class REDUCER_OUT_TYPE>
 class map_reduce {
   std::size_t mnum_;
   std::size_t rnum_;
@@ -30,7 +31,8 @@ class map_reduce {
 public:
   explicit map_reduce(std::size_t mnum, std::size_t rnum) noexcept : mnum_{mnum}, rnum_{rnum} {}
 
-  void run(std::vector<DATA_TYPE>&& input, mfunc_ptr_t<DATA_TYPE, MAPPER_OUT_TYPE> mfunc) noexcept {
+  void run(std::vector<DATA_TYPE>&& input, mfunc_ptr_t<DATA_TYPE, MAPPER_OUT_TYPE> mfunc,
+           rfunc_ptr_t<MAPPER_OUT_TYPE, REDUCER_OUT_TYPE> rfunc) noexcept {
     std::vector<std::vector<DATA_TYPE>> splitted = split(std::move(input), mnum_);
 
     /* Run MAP */
@@ -47,6 +49,10 @@ public:
     /* Split for reducing */
     std::vector<std::vector<MAPPER_OUT_TYPE>> rsplitted =
         common::split_reduce<MAPPER_OUT_TYPE>(std::move(smerged), rnum_);
+
+    /* Run REDUCE */
+    core::reducer<MAPPER_OUT_TYPE, REDUCER_OUT_TYPE> reducer(rfunc);
+    std::vector<REDUCER_OUT_TYPE> rres = reducer.exec(std::move(rsplitted));
   }
 };
 
