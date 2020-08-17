@@ -43,6 +43,10 @@ public:
 
     /* MERGE */
     std::vector<MAPPER_OUT_TYPE> smerged = common::merge<MAPPER_OUT_TYPE>(std::move(mres));
+
+    /* Split for reducing */
+    std::vector<std::vector<MAPPER_OUT_TYPE>> rsplitted =
+        common::split_reduce<MAPPER_OUT_TYPE>(std::move(smerged), rnum_);
   }
 };
 

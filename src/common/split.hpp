@@ -63,6 +63,51 @@ std::vector<std::vector<T>> split(std::vector<T>&& input, std::size_t parts) {
   return res;
 }
 
+/**
+ * @brief Split long vector to reduce threads.
+ * @param [in] vec - is a long vector of sorted elements.
+ * @param [in] parts -  a given number of parts.
+ * @return Vector of vectors, contain all unique elements.
+ */
+template <class T>
+std::vector<std::vector<T>> split_reduce(std::vector<T>&& vec, std::size_t parts) {
+  std::vector<std::vector<T>> res;
+
+  std::size_t num_cluster = (vec.size() / parts) + (vec.size() % parts ? 1 : 0);
+
+  auto it = vec.begin();
+  auto it_prev = it;
+
+  while (it_prev != vec.end()) {
+    res.emplace_back();
+    std::vector<T>& cluster = res.back();
+
+    /* fill this cluster */
+    std::size_t inserted_count{0};
+    while (inserted_count < num_cluster) {
+      if (it == vec.end() || *it != *it_prev) {
+        std::copy(std::make_move_iterator(it_prev), std::make_move_iterator(it),
+                  std::back_inserter(cluster));
+        std::size_t moved_count = std::distance(it_prev, it);
+        inserted_count += moved_count;
+
+        it_prev = it;
+        if (it_prev == vec.end())
+          break;
+
+        ++it;
+      }
+      else
+        ++it;
+    }
+
+    if (it_prev == vec.end())
+      break;
+  }
+
+  return res;
+}
+
 } /* common:: */
 
 #endif /* COMMON_SPLIT_HPP_ */
