@@ -1,0 +1,2 @@
+<map id="common::_detail::has_size&lt; T, std::enable_if_t&lt; std::is_same&lt; decltype(std::declval&lt; T &gt;().size()), std::size_t &gt;::value &gt; &gt;" name="common::_detail::has_size&lt; T, std::enable_if_t&lt; std::is_same&lt; decltype(std::declval&lt; T &gt;().size()), std::size_t &gt;::value &gt; &gt;">
+</map>

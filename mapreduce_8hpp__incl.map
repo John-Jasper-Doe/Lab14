@@ -1,0 +1,7 @@
+<map id="src/core/mapreduce.hpp" name="src/core/mapreduce.hpp">
+<area shape="rect" id="node3" href="$mapper_8hpp.html" title="Definition of the class &quot;Mapper&quot;. " alt="" coords="309,155,408,181"/>
+<area shape="rect" id="node8" href="$reducer_8hpp.html" title="Definition of the class &quot;Reducer&quot;. " alt="" coords="187,155,285,181"/>
+<area shape="rect" id="node11" href="$merge_8hpp.html" title="Implementation of various merge functions. " alt="" coords="442,80,595,107"/>
+<area shape="rect" id="node14" href="$split_8hpp.html" title="Implementation of various split functions. " alt="" coords="703,155,841,181"/>
+<area shape="rect" id="node13" href="$extractor_8hpp.html" title="Definition of the class &quot;Extractor&quot;. " alt="" coords="433,155,541,181"/>
+</map>
