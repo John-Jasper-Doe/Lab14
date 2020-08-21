@@ -9,7 +9,6 @@
 #ifndef COMMON_EXTRACTOR_HPP_
 #define COMMON_EXTRACTOR_HPP_
 
-#include <regex>
 #include <string>
 #include <vector>
 
@@ -40,7 +39,7 @@ public:
 
   /** @brief Move operator */
   extractor& operator=(extractor&& src) noexcept {
-    if (this != src) {
+    if (this != &src) {
       data_.swap(src.data_);
       next_ = src.next_;
     }

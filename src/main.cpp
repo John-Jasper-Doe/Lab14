@@ -15,6 +15,8 @@
 
 #include "core/mapreduce.hpp"
 
+#include "common/counter.hpp"
+
 namespace {
 
 struct param {
@@ -91,6 +93,9 @@ std::vector<std::string> read_file(std::fstream& strm) {
 
 /** @brief Main entry point */
 int main(int argc, const char* argv[]) {
+  using namespace yamr::core;
+  using str_counter_t = common::counter<std::string>;
+
   param_t prm;
 
   try {
@@ -106,8 +111,17 @@ int main(int argc, const char* argv[]) {
     std::cerr << "Can not opened file" << std::endl;
     return EXIT_SUCCESS;
   }
-  std::vector<std::string> input_lines = read_file(fstrm);
+  std::vector<std::string> lines = read_file(fstrm);
   fstrm.close();
+
+  auto map_reduc =
+      map_reduce<std::string, str_counter_t, str_counter_t, str_counter_t>(prm.mnum, prm.rnum);
+
+  str_counter_t res = map_reduc.run(std::move(lines), mapper_func<str_counter_t>,
+                                    reducer_func<str_counter_t>, reducer_func<str_counter_t>);
+
+  std::cout << "Minimal identifying prefix size: " << (res.count() > 1 ? res.strlen() : 0) + 1
+            << std::endl;
 
   return EXIT_SUCCESS;
 }

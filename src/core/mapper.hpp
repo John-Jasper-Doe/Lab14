@@ -40,7 +40,7 @@ public:
    * @param [in] input - input data.
    * @return Processed data.
    */
-  std::vector<std::vector<OUT_TYPE>> exec(std::vector<DATA_TYPE>&& input) noexcept {
+  std::vector<std::vector<OUT_TYPE>> exec(std::vector<std::vector<DATA_TYPE>>&& input) noexcept {
     std::vector<std::vector<OUT_TYPE>> res;
 
     std::vector<std::promise<std::vector<OUT_TYPE>>> promises(input.size());
@@ -70,6 +70,19 @@ public:
     return res;
   }
 };
+
+template <class OUT_TYPE>
+std::vector<OUT_TYPE> mapper_func(std::vector<std::string>&& lines) {
+  std::vector<OUT_TYPE> res;
+
+  for (const std::string& s : lines) {
+    for (size_t len = 1; len != s.size() + 1; ++len) {
+      res.emplace_back(s.substr(0, len));
+    }
+  }
+
+  return res;
+}
 
 } /* core:: */
 } /* yamr:: */

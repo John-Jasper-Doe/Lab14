@@ -31,5 +31,17 @@ CompactNamespaces: false
 IndentCaseLabels: false
 FixNamespaceComments: false
 BreakConstructorInitializers: BeforeComma
+BreakInheritanceList: BeforeComma
 ConstructorInitializerIndentWidth: 2
 UseTab: Never
+SpaceAfterTemplateKeyword: true
+SpaceBeforeAssignmentOperators: true
+IncludeCategories:
+  - Regex:           '^"(llvm|llvm-c|clang|clang-c)/'
+    Priority:        2
+  - Regex:           '^(<|"(gtest|gmock|isl|json)/)'
+    Priority:        3
+  - Regex:           '<[[:alnum:].]+>'
+    Priority:        4
+  - Regex:           '.*'
+    Priority:        1

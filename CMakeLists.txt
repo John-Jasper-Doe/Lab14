@@ -23,7 +23,7 @@ set(PROJECT_VERSION ${YAMR_MAJOR}.${YAMR_MINOR}.${YAMR_PATCH})
 configure_file(version.hpp.in ${CMAKE_BINARY_DIR}/src/include/version.hpp @ONLY)
 
 ## Set property
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_compile_options(-Wall -Werror -Wextra -Wpedantic -g -O0)
 

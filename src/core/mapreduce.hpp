@@ -22,8 +22,12 @@ namespace yamr {
 /** @brief The namespace of the Core */
 namespace core {
 
+/** @brief Alias of the pointer on function for "Mapper" class. */
+template <class DATA_TYPE, class OUT_TYPE>
+using out_func_ptr_t = std::function<OUT_TYPE(std::vector<DATA_TYPE>&&)>;
+
 /** @brief The map_reduce class */
-template <class DATA_TYPE, class MAPPER_OUT_TYPE, class REDUCER_OUT_TYPE>
+template <class DATA_TYPE, class MAPPER_OUT_TYPE, class REDUCER_OUT_TYPE, class OUT_TYPE>
 class map_reduce {
   std::size_t mnum_;
   std::size_t rnum_;
@@ -31,9 +35,10 @@ class map_reduce {
 public:
   explicit map_reduce(std::size_t mnum, std::size_t rnum) noexcept : mnum_{mnum}, rnum_{rnum} {}
 
-  void run(std::vector<DATA_TYPE>&& input, mfunc_ptr_t<DATA_TYPE, MAPPER_OUT_TYPE> mfunc,
-           rfunc_ptr_t<MAPPER_OUT_TYPE, REDUCER_OUT_TYPE> rfunc) noexcept {
-    std::vector<std::vector<DATA_TYPE>> splitted = split(std::move(input), mnum_);
+  OUT_TYPE run(std::vector<DATA_TYPE>&& input, mfunc_ptr_t<DATA_TYPE, MAPPER_OUT_TYPE> mfunc,
+               rfunc_ptr_t<MAPPER_OUT_TYPE, REDUCER_OUT_TYPE> rfunc,
+               out_func_ptr_t<REDUCER_OUT_TYPE, OUT_TYPE> ofunc) noexcept {
+    std::vector<std::vector<DATA_TYPE>> splitted = common::split(std::move(input), mnum_);
 
     /* Run MAP */
     core::mapper<DATA_TYPE, MAPPER_OUT_TYPE> mapper(mfunc);
@@ -53,6 +58,9 @@ public:
     /* Run REDUCE */
     core::reducer<MAPPER_OUT_TYPE, REDUCER_OUT_TYPE> reducer(rfunc);
     std::vector<REDUCER_OUT_TYPE> rres = reducer.exec(std::move(rsplitted));
+
+    /* Final data processing */
+    return ofunc(std::move(rres));
   }
 };
 
