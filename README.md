@@ -10,4 +10,3 @@ Manual: https://john-jasper-doe.github.io/Lab14/index.html
 
 
 ## About
-
